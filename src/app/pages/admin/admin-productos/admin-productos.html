@@ -1,0 +1,218 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <!-- Sidebar admin -->
+    <div class="col-12 col-md-3 col-lg-2 mb-3 mb-md-0">
+      <div class="admin-sidebar rounded p-2 p-md-3">
+        <h6 class="text-uppercase small fw-bold text-muted mb-2 d-none d-md-block px-2">
+          Administración
+        </h6>
+        <nav class="nav flex-row flex-md-column flex-wrap gap-1">
+          <a routerLink="/admin/productos" class="nav-link active"
+            ><i class="bi bi-box-seam me-1 me-md-2"></i
+            ><span class="d-none d-sm-inline">Productos</span></a
+          >
+          <a routerLink="/admin/usuarios" class="nav-link"
+            ><i class="bi bi-people me-1 me-md-2"></i
+            ><span class="d-none d-sm-inline">Usuarios</span></a
+          >
+          <a routerLink="/admin/pedidos" class="nav-link"
+            ><i class="bi bi-clipboard-list me-1 me-md-2"></i
+            ><span class="d-none d-sm-inline">Pedidos</span></a
+          >
+        </nav>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="col-12 col-md-9 col-lg-10">
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <h3 class="fw-bold mb-0">
+          <i class="bi bi-box-seam me-2 text-primary"></i>Gestión de Productos
+        </h3>
+        <button class="btn btn-primary" (click)="nuevo()">
+          <i class="bi bi-plus-lg me-1"></i>Nuevo Producto
+        </button>
+      </div>
+
+      @if (success) {
+        <div class="alert alert-success alert-dismissible">
+          <i class="bi bi-check-circle me-2"></i>{{ success }}
+        </div>
+      }
+      @if (error) {
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+        </div>
+      }
+
+      <!-- Form -->
+      @if (mostrarFormulario) {
+        <div class="card mb-4 p-4">
+          <h5 class="fw-bold mb-3">{{ editando ? 'Editar Producto' : 'Nuevo Producto' }}</h5>
+          <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+            <div class="row g-3">
+              <div class="col-12 col-md-6">
+                <label class="form-label fw-semibold"
+                  >Nombre <span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="nombre"
+                  [class.is-invalid]="f['nombre'].invalid && f['nombre'].touched"
+                />
+                <div class="invalid-feedback">
+                  @if (f['nombre'].errors?.['required']) {
+                    Obligatorio.
+                  } @else if (f['nombre'].errors?.['maxlength']) {
+                    Máx 200 caracteres.
+                  }
+                </div>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label fw-semibold"
+                  >Categoría <span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="categoria"
+                  [class.is-invalid]="f['categoria'].invalid && f['categoria'].touched"
+                />
+                <div class="invalid-feedback">Obligatorio.</div>
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-semibold"
+                  >Descripción <span class="text-danger">*</span></label
+                >
+                <textarea
+                  rows="2"
+                  class="form-control"
+                  formControlName="descripcion"
+                  [class.is-invalid]="f['descripcion'].invalid && f['descripcion'].touched"
+                ></textarea>
+                <div class="invalid-feedback">Obligatorio.</div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <label class="form-label fw-semibold"
+                  >Precio <span class="text-danger">*</span></label
+                >
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="precio"
+                    min="0.01"
+                    step="0.01"
+                    [class.is-invalid]="f['precio'].invalid && f['precio'].touched"
+                  />
+                  <div class="invalid-feedback">Mínimo $0.01.</div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <label class="form-label fw-semibold"
+                  >Stock <span class="text-danger">*</span></label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="stock"
+                  min="0"
+                  [class.is-invalid]="f['stock'].invalid && f['stock'].touched"
+                />
+                <div class="invalid-feedback">Stock debe ser ≥ 0.</div>
+              </div>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+              <button type="submit" class="btn btn-success" [disabled]="guardando">
+                @if (guardando) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                }
+                <i class="bi bi-save me-1"></i>{{ editando ? 'Actualizar' : 'Crear' }}
+              </button>
+              <button type="button" class="btn btn-outline-secondary" (click)="cancelar()">
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+
+      <!-- Table -->
+      @if (loading) {
+        <div class="text-center py-4"><div class="spinner-border text-primary"></div></div>
+      } @else {
+        <div class="card">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-dark">
+                <tr>
+                  <th style="width: 50px">#</th>
+                  <th>Nombre</th>
+                  <th class="d-none d-md-table-cell">Categoría</th>
+                  <th class="text-end">Precio</th>
+                  <th class="text-center">Stock</th>
+                  <th style="width: 130px">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of productos; track p.id) {
+                  <tr>
+                    <td class="text-muted small">{{ p.id }}</td>
+                    <td>
+                      <strong>{{ p.nombre }}</strong>
+                      <div class="small text-muted d-md-none">{{ p.categoria }}</div>
+                    </td>
+                    <td class="d-none d-md-table-cell">
+                      <span class="badge bg-secondary">{{ p.categoria }}</span>
+                    </td>
+                    <td class="text-end fw-bold">${{ p.precio | number: '1.0-0' }}</td>
+                    <td class="text-center">
+                      <span
+                        class="badge"
+                        [class.bg-success]="p.stock! > 5"
+                        [class.bg-warning]="p.stock! > 0 && p.stock! <= 5"
+                        [class.bg-danger]="p.stock === 0"
+                      >
+                        {{ p.stock }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="d-flex gap-1">
+                        <button
+                          class="btn btn-sm btn-outline-primary"
+                          (click)="editar(p)"
+                          title="Editar"
+                        >
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button
+                          class="btn btn-sm btn-outline-danger"
+                          (click)="eliminar(p.id!)"
+                          [disabled]="eliminandoId === p.id"
+                          title="Eliminar"
+                        >
+                          @if (eliminandoId === p.id) {
+                            <span class="spinner-border spinner-border-sm"></span>
+                          } @else {
+                            <i class="bi bi-trash"></i>
+                          }
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+                @if (productos.length === 0) {
+                  <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">No hay productos.</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

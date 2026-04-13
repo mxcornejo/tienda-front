@@ -1,0 +1,59 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card p-4 text-center">
+        <!-- Success animation -->
+        <div class="mb-4">
+          <div
+            class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center"
+            style="width: 100px; height: 100px"
+          >
+            <i class="bi bi-check-circle-fill text-success" style="font-size: 3.5rem"></i>
+          </div>
+        </div>
+
+        <h2 class="fw-bold text-success mb-1">¡Pago Exitoso!</h2>
+        <p class="text-muted mb-4">Tu pedido ha sido procesado correctamente.</p>
+
+        @if (pedido) {
+          <div class="card bg-light border-0 p-3 mb-4 text-start">
+            <h6 class="fw-bold mb-3">Resumen del pedido</h6>
+            <div class="row g-2">
+              <div class="col-6 text-muted small">Nº Pedido:</div>
+              <div class="col-6 small fw-semibold">#{{ pedido.id }}</div>
+              <div class="col-6 text-muted small">Producto:</div>
+              <div class="col-6 small">{{ pedido.producto?.nombre || producto?.nombre }}</div>
+              <div class="col-6 text-muted small">Cantidad:</div>
+              <div class="col-6 small">{{ pedido.cantidad }}</div>
+              <div class="col-6 text-muted small">Total pagado:</div>
+              <div class="col-6 small fw-bold text-success">
+                ${{ pedido.total | number: '1.0-0' }}
+              </div>
+              <div class="col-6 text-muted small">Estado:</div>
+              <div class="col-6">
+                <span class="badge bg-warning text-dark">{{ pedido.estado }}</span>
+              </div>
+              <div class="col-6 text-muted small">Fecha:</div>
+              <div class="col-6 small">{{ fechaHoy | date: 'dd/MM/yyyy HH:mm' }}</div>
+            </div>
+          </div>
+        }
+
+        <div class="alert alert-info text-start small mb-4">
+          <i class="bi bi-info-circle-fill me-2"></i>
+          Recibirás una confirmación a tu correo registrado. Puedes consultar el estado de tu pedido
+          en <strong>Mis Compras</strong>.
+        </div>
+
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+          <a routerLink="/mis-compras" class="btn btn-primary">
+            <i class="bi bi-bag-check me-1"></i>Ver Mis Compras
+          </a>
+          <a routerLink="/catalogo" class="btn btn-outline-secondary">
+            <i class="bi bi-grid me-1"></i>Seguir Comprando
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

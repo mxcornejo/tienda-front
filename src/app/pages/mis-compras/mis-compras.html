@@ -1,0 +1,60 @@
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <h2 class="fw-bold mb-0"><i class="bi bi-bag-check me-2 text-primary"></i>Mis Compras</h2>
+    <a routerLink="/catalogo" class="btn btn-outline-primary btn-sm">
+      <i class="bi bi-grid me-1"></i>Seguir comprando
+    </a>
+  </div>
+
+  @if (loading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary"></div>
+    </div>
+  }
+
+  @if (error) {
+    <div class="alert alert-danger">{{ error }}</div>
+  }
+
+  @if (!loading && pedidos.length === 0) {
+    <div class="text-center py-5">
+      <i class="bi bi-bag fs-1 text-muted"></i>
+      <p class="mt-2 text-muted">Aún no tienes compras registradas.</p>
+      <a routerLink="/catalogo" class="btn btn-primary">Explorar Catálogo</a>
+    </div>
+  }
+
+  @if (!loading && pedidos.length > 0) {
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Producto</th>
+            <th class="text-center">Cantidad</th>
+            <th class="text-end">Total</th>
+            <th class="text-center">Estado</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of pedidos; track p.id) {
+            <tr>
+              <td class="text-muted small">#{{ p.id }}</td>
+              <td>
+                <strong>{{ p.producto?.nombre }}</strong>
+                <div class="small text-muted">{{ p.producto?.categoria }}</div>
+              </td>
+              <td class="text-center">{{ p.cantidad }}</td>
+              <td class="text-end fw-bold">${{ p.total | number: '1.0-0' }}</td>
+              <td class="text-center">
+                <span class="badge {{ estadoBadge(p.estado!) }}">{{ p.estado }}</span>
+              </td>
+              <td class="small text-muted">{{ p.fechaPedido | date: 'dd/MM/yyyy HH:mm' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

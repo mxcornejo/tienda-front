@@ -1,0 +1,234 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-12 col-md-3 col-lg-2 mb-3 mb-md-0">
+      <div class="admin-sidebar rounded p-2 p-md-3">
+        <h6 class="text-uppercase small fw-bold text-muted mb-2 d-none d-md-block px-2">
+          Administración
+        </h6>
+        <nav class="nav flex-row flex-md-column flex-wrap gap-1">
+          <a routerLink="/admin/productos" class="nav-link"
+            ><i class="bi bi-box-seam me-1 me-md-2"></i
+            ><span class="d-none d-sm-inline">Productos</span></a
+          >
+          <a routerLink="/admin/usuarios" class="nav-link active"
+            ><i class="bi bi-people me-1 me-md-2"></i
+            ><span class="d-none d-sm-inline">Usuarios</span></a
+          >
+          <a routerLink="/admin/pedidos" class="nav-link"
+            ><i class="bi bi-clipboard-list me-1 me-md-2"></i
+            ><span class="d-none d-sm-inline">Pedidos</span></a
+          >
+        </nav>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-9 col-lg-10">
+      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <h3 class="fw-bold mb-0">
+          <i class="bi bi-people me-2 text-primary"></i>Gestión de Usuarios
+        </h3>
+        <button class="btn btn-primary" (click)="nuevo()">
+          <i class="bi bi-person-plus me-1"></i>Nuevo Usuario
+        </button>
+      </div>
+
+      @if (success) {
+        <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>{{ success }}</div>
+      }
+      @if (error) {
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+        </div>
+      }
+
+      <!-- Form -->
+      @if (mostrarFormulario) {
+        <div class="card mb-4 p-4">
+          <h5 class="fw-bold mb-3">{{ editando ? 'Editar Usuario' : 'Nuevo Usuario' }}</h5>
+          <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+            <div class="row g-3">
+              <div class="col-12 col-md-6">
+                <label class="form-label fw-semibold"
+                  >Username <span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="username"
+                  [class.is-invalid]="f['username'].invalid && f['username'].touched"
+                />
+                <div class="invalid-feedback">
+                  @if (f['username'].errors?.['required']) {
+                    Obligatorio.
+                  } @else if (f['username'].errors?.['pattern']) {
+                    Solo letras, números y guion bajo.
+                  }
+                </div>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label fw-semibold"
+                  >Correo <span class="text-danger">*</span></label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  formControlName="email"
+                  [class.is-invalid]="f['email'].invalid && f['email'].touched"
+                />
+                <div class="invalid-feedback">Correo inválido.</div>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label fw-semibold"
+                  >Contraseña{{ editando ? ' (dejar vacío para mantener)' : '' }}
+                  <span class="text-danger">*</span></label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  formControlName="password"
+                  [class.is-invalid]="f['password'].invalid && f['password'].touched"
+                />
+                @if (f['password'].touched && f['password'].value) {
+                  <ul class="list-unstyled small mt-1 ps-1">
+                    <li
+                      [class.text-success]="!pw?.errors?.['minLength']"
+                      [class.text-danger]="pw?.errors?.['minLength']"
+                    >
+                      <i
+                        class="bi"
+                        [class.bi-check-circle-fill]="!pw?.errors?.['minLength']"
+                        [class.bi-x-circle-fill]="pw?.errors?.['minLength']"
+                      ></i>
+                      Mín 8 chars
+                    </li>
+                    <li
+                      [class.text-success]="!pw?.errors?.['noUpperCase']"
+                      [class.text-danger]="pw?.errors?.['noUpperCase']"
+                    >
+                      <i
+                        class="bi"
+                        [class.bi-check-circle-fill]="!pw?.errors?.['noUpperCase']"
+                        [class.bi-x-circle-fill]="pw?.errors?.['noUpperCase']"
+                      ></i>
+                      1 mayúscula
+                    </li>
+                    <li
+                      [class.text-success]="!pw?.errors?.['noNumber']"
+                      [class.text-danger]="pw?.errors?.['noNumber']"
+                    >
+                      <i
+                        class="bi"
+                        [class.bi-check-circle-fill]="!pw?.errors?.['noNumber']"
+                        [class.bi-x-circle-fill]="pw?.errors?.['noNumber']"
+                      ></i>
+                      1 número
+                    </li>
+                    <li
+                      [class.text-success]="!pw?.errors?.['noSpecial']"
+                      [class.text-danger]="pw?.errors?.['noSpecial']"
+                    >
+                      <i
+                        class="bi"
+                        [class.bi-check-circle-fill]="!pw?.errors?.['noSpecial']"
+                        [class.bi-x-circle-fill]="pw?.errors?.['noSpecial']"
+                      ></i>
+                      1 car. especial
+                    </li>
+                  </ul>
+                }
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label fw-semibold">Rol <span class="text-danger">*</span></label>
+                <select class="form-select" formControlName="rol">
+                  <option value="ROLE_CLIENTE">Cliente</option>
+                  <option value="ROLE_ADMIN">Administrador</option>
+                </select>
+              </div>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+              <button type="submit" class="btn btn-success" [disabled]="guardando">
+                @if (guardando) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                }
+                <i class="bi bi-save me-1"></i>{{ editando ? 'Actualizar' : 'Crear' }}
+              </button>
+              <button type="button" class="btn btn-outline-secondary" (click)="cancelar()">
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+
+      @if (loading) {
+        <div class="text-center py-4"><div class="spinner-border text-primary"></div></div>
+      } @else {
+        <div class="card">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-dark">
+                <tr>
+                  <th>#</th>
+                  <th>Username</th>
+                  <th class="d-none d-md-table-cell">Correo</th>
+                  <th class="d-none d-sm-table-cell">Rol</th>
+                  <th style="width: 130px">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (u of usuarios; track u.id) {
+                  <tr>
+                    <td class="text-muted small">{{ u.id }}</td>
+                    <td>
+                      <strong>{{ u.username }}</strong>
+                      <div class="small text-muted d-md-none">{{ u.email }}</div>
+                    </td>
+                    <td class="d-none d-md-table-cell">{{ u.email }}</td>
+                    <td class="d-none d-sm-table-cell">
+                      <span
+                        class="badge"
+                        [class.bg-danger]="u.rol === 'ROLE_ADMIN'"
+                        [class.bg-primary]="u.rol !== 'ROLE_ADMIN'"
+                      >
+                        {{ u.rol === 'ROLE_ADMIN' ? 'Admin' : 'Cliente' }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="d-flex gap-1">
+                        <button
+                          class="btn btn-sm btn-outline-primary"
+                          (click)="editar(u)"
+                          title="Editar"
+                        >
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button
+                          class="btn btn-sm btn-outline-danger"
+                          (click)="eliminar(u.id!)"
+                          [disabled]="eliminandoId === u.id"
+                          title="Eliminar"
+                        >
+                          @if (eliminandoId === u.id) {
+                            <span class="spinner-border spinner-border-sm"></span>
+                          } @else {
+                            <i class="bi bi-trash"></i>
+                          }
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+                @if (usuarios.length === 0) {
+                  <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">No hay usuarios.</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

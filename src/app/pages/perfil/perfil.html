@@ -1,0 +1,170 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card p-4">
+        <div class="d-flex align-items-center mb-4">
+          <div
+            class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+            style="width: 56px; height: 56px; font-size: 1.5rem"
+          >
+            {{ authService.getUsuario()?.username?.charAt(0)?.toUpperCase() }}
+          </div>
+          <div>
+            <h3 class="mb-0 fw-bold">Mi Perfil</h3>
+            <small class="text-muted">Actualiza tu información personal</small>
+          </div>
+        </div>
+
+        @if (success) {
+          <div class="alert alert-success">
+            <i class="bi bi-check-circle-fill me-2"></i>{{ success }}
+          </div>
+        }
+        @if (error) {
+          <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ error }}
+          </div>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+          <div class="mb-3">
+            <label class="form-label fw-semibold"
+              >Nombre de usuario <span class="text-danger">*</span></label
+            >
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-person"></i></span>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="username"
+                [class.is-invalid]="f['username'].invalid && f['username'].touched"
+                [class.is-valid]="f['username'].valid && f['username'].touched"
+              />
+              <div class="invalid-feedback">
+                @if (f['username'].errors?.['required']) {
+                  Campo obligatorio.
+                } @else if (f['username'].errors?.['minlength']) {
+                  Mínimo 3 caracteres.
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold"
+              >Correo electrónico <span class="text-danger">*</span></label
+            >
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+              <input
+                type="email"
+                class="form-control"
+                formControlName="email"
+                [class.is-invalid]="f['email'].invalid && f['email'].touched"
+                [class.is-valid]="f['email'].valid && f['email'].touched"
+              />
+              <div class="invalid-feedback">
+                @if (f['email'].errors?.['required']) {
+                  Campo obligatorio.
+                } @else if (f['email'].errors?.['email']) {
+                  Correo inválido.
+                }
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-3" />
+          <p class="small text-muted">
+            <i class="bi bi-shield-lock me-1"></i>Cambiar contraseña (dejar en blanco para mantener
+            la actual)
+          </p>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nueva contraseña</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-lock"></i></span>
+              <input
+                type="password"
+                class="form-control"
+                formControlName="password"
+                [class.is-invalid]="f['password'].invalid && f['password'].touched"
+                placeholder="Nueva contraseña (opcional)"
+              />
+              <div class="invalid-feedback">La contraseña no cumple los requisitos.</div>
+            </div>
+            @if (f['password'].touched && f['password'].value) {
+              <ul class="list-unstyled small mt-1 ps-1">
+                <li
+                  [class.text-success]="!pw?.errors?.['minLength']"
+                  [class.text-danger]="pw?.errors?.['minLength']"
+                >
+                  <i
+                    class="bi"
+                    [class.bi-check-circle-fill]="!pw?.errors?.['minLength']"
+                    [class.bi-x-circle-fill]="pw?.errors?.['minLength']"
+                  ></i>
+                  Mínimo 8 caracteres
+                </li>
+                <li
+                  [class.text-success]="!pw?.errors?.['noNumber']"
+                  [class.text-danger]="pw?.errors?.['noNumber']"
+                >
+                  <i
+                    class="bi"
+                    [class.bi-check-circle-fill]="!pw?.errors?.['noNumber']"
+                    [class.bi-x-circle-fill]="pw?.errors?.['noNumber']"
+                  ></i>
+                  Al menos un número
+                </li>
+                <li
+                  [class.text-success]="!pw?.errors?.['noUpperCase']"
+                  [class.text-danger]="pw?.errors?.['noUpperCase']"
+                >
+                  <i
+                    class="bi"
+                    [class.bi-check-circle-fill]="!pw?.errors?.['noUpperCase']"
+                    [class.bi-x-circle-fill]="pw?.errors?.['noUpperCase']"
+                  ></i>
+                  Al menos una mayúscula
+                </li>
+                <li
+                  [class.text-success]="!pw?.errors?.['noSpecial']"
+                  [class.text-danger]="pw?.errors?.['noSpecial']"
+                >
+                  <i
+                    class="bi"
+                    [class.bi-check-circle-fill]="!pw?.errors?.['noSpecial']"
+                    [class.bi-x-circle-fill]="pw?.errors?.['noSpecial']"
+                  ></i>
+                  Al menos un carácter especial
+                </li>
+              </ul>
+            }
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Confirmar nueva contraseña</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+              <input
+                type="password"
+                class="form-control"
+                formControlName="confirmarPassword"
+                [class.is-invalid]="f['confirmarPassword'].touched && form.errors?.['mismatch']"
+                placeholder="Confirma tu nueva contraseña"
+              />
+              <div class="invalid-feedback">Las contraseñas no coinciden.</div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 py-2" [disabled]="loading">
+            @if (loading) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            <i class="bi bi-save me-1"></i> Guardar Cambios
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
