@@ -83,12 +83,26 @@
                   >Contraseña{{ editando ? ' (dejar vacío para mantener)' : '' }}
                   <span class="text-danger">*</span></label
                 >
-                <input
-                  type="password"
-                  class="form-control"
-                  formControlName="password"
-                  [class.is-invalid]="f['password'].invalid && f['password'].touched"
-                />
+                <div class="input-group">
+                  <input
+                    [type]="showPassword ? 'text' : 'password'"
+                    class="form-control"
+                    formControlName="password"
+                    [class.is-invalid]="f['password'].invalid && f['password'].touched"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    (click)="togglePassword()"
+                    tabindex="-1"
+                  >
+                    <i
+                      class="bi"
+                      [class.bi-eye]="!showPassword"
+                      [class.bi-eye-slash]="showPassword"
+                    ></i>
+                  </button>
+                </div>
                 @if (f['password'].touched && f['password'].value) {
                   <ul class="list-unstyled small mt-1 ps-1">
                     <li

@@ -107,6 +107,14 @@ describe('ProductoDetalleComponent', () => {
       expect(component.form.touched).toBeTrue();
     });
 
+    it('should return early when producto has no id (form valid)', () => {
+      component.producto = { nombre: 'X', descripcion: 'X', precio: 10, stock: 1, categoria: 'X' };
+      component.form.setValue({ cantidad: 1 });
+      component.comprar();
+      expect(component.form.touched).toBeTrue();
+      expect(pedidoServiceSpy.comprar).not.toHaveBeenCalled();
+    });
+
     it('should redirect to /login when not logged in', () => {
       authServiceSpy.isLoggedIn.and.returnValue(false);
       const navigateSpy = spyOn(router, 'navigate');

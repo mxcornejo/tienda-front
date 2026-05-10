@@ -16,6 +16,7 @@ export class LoginComponent {
   error = '';
   loading = false;
   returnUrl = '/';
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -33,6 +34,10 @@ export class LoginComponent {
 
   get f() {
     return this.form.controls;
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit() {

@@ -40,6 +40,8 @@ export class RegistroComponent {
   error = '';
   success = '';
   loading = false;
+  showPassword = false;
+  showConfirmPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -70,6 +72,14 @@ export class RegistroComponent {
   }
   get pw() {
     return this.form.get('password');
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPassword() {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   onSubmit() {

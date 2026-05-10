@@ -62,6 +62,11 @@ describe('RegistroComponent', () => {
       expect(component.pw?.errors?.['minLength']).toBeTrue();
     });
 
+    it('should fail if longer than 30 characters', () => {
+      setPassword('Aa1!aaaaaaaaaaaaaaaaaaaaaaaaaaa'); // 31 chars
+      expect(component.pw?.errors?.['maxLength']).toBeTrue();
+    });
+
     it('should fail without uppercase letter', () => {
       setPassword('secure1!lllll');
       expect(component.pw?.errors?.['noUpperCase']).toBeTrue();

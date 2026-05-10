@@ -41,12 +41,24 @@
               <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-lock"></i></span>
                 <input
-                  type="password"
+                  [type]="showPassword ? 'text' : 'password'"
                   class="form-control"
                   formControlName="password"
                   [class.is-invalid]="f['password'].invalid && f['password'].touched"
                   placeholder="Tu contraseña"
                 />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="togglePassword()"
+                  tabindex="-1"
+                >
+                  <i
+                    class="bi"
+                    [class.bi-eye]="!showPassword"
+                    [class.bi-eye-slash]="showPassword"
+                  ></i>
+                </button>
                 @if (f['password'].touched && f['password'].errors?.['required']) {
                   <div class="invalid-feedback">La contraseña es obligatoria.</div>
                 }

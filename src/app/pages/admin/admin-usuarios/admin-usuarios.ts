@@ -44,6 +44,7 @@ export class AdminUsuariosComponent implements OnInit {
   success = '';
   mostrarFormulario = false;
   eliminandoId: number | null = null;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -89,6 +90,10 @@ export class AdminUsuariosComponent implements OnInit {
   }
   get pw() {
     return this.form.get('password');
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
   }
 
   nuevo() {

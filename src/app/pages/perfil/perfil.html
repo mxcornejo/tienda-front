@@ -84,12 +84,24 @@
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-lock"></i></span>
               <input
-                type="password"
+                [type]="showPassword ? 'text' : 'password'"
                 class="form-control"
                 formControlName="password"
                 [class.is-invalid]="f['password'].invalid && f['password'].touched"
                 placeholder="Nueva contraseña (opcional)"
               />
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="togglePassword()"
+                tabindex="-1"
+              >
+                <i
+                  class="bi"
+                  [class.bi-eye]="!showPassword"
+                  [class.bi-eye-slash]="showPassword"
+                ></i>
+              </button>
               <div class="invalid-feedback">La contraseña no cumple los requisitos.</div>
             </div>
             @if (f['password'].touched && f['password'].value) {
@@ -147,12 +159,24 @@
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
               <input
-                type="password"
+                [type]="showConfirmPassword ? 'text' : 'password'"
                 class="form-control"
                 formControlName="confirmarPassword"
                 [class.is-invalid]="f['confirmarPassword'].touched && form.errors?.['mismatch']"
                 placeholder="Confirma tu nueva contraseña"
               />
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="toggleConfirmPassword()"
+                tabindex="-1"
+              >
+                <i
+                  class="bi"
+                  [class.bi-eye]="!showConfirmPassword"
+                  [class.bi-eye-slash]="showConfirmPassword"
+                ></i>
+              </button>
               <div class="invalid-feedback">Las contraseñas no coinciden.</div>
             </div>
           </div>

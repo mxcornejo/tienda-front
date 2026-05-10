@@ -39,6 +39,8 @@ export class PerfilComponent implements OnInit {
   success = '';
   error = '';
   loading = false;
+  showPassword = false;
+  showConfirmPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -77,6 +79,14 @@ export class PerfilComponent implements OnInit {
     return this.form.get('password');
   }
 
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPassword() {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
   onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -88,6 +98,7 @@ export class PerfilComponent implements OnInit {
     const payload: Partial<Usuario> = {
       username: this.form.value.username,
       email: this.form.value.email,
+      rol: this.usuario.rol,
     };
     if (this.form.value.password) payload['password'] = this.form.value.password;
 
